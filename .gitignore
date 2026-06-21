@@ -216,3 +216,29 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific ignores
+
+# Dataset
+dataset/
+
+# Logs
+logs/
+
+# Trained models
+*.keras
+*.h5
+*.weights
+
+# Videos
+*.mp4
+*.avi
+*.mov
+
+# Generated outputs
+outputs/
+results/
+
+# OS files
+.DS_Store
+Thumbs.db
