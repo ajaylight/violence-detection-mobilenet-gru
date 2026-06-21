@@ -139,6 +139,19 @@ python training/live_alert.py
 
 ---
 
+## Skills Demonstrated
+
+- Deep Learning
+- Computer Vision
+- TensorFlow
+- OpenCV
+- Flask API Development
+- Real-Time Video Processing
+- Incident Logging Systems
+- Frontend Development
+
+---
+
 ## Future Enhancements
 
 * Email Notifications
