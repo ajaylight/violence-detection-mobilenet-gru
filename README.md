@@ -23,28 +23,7 @@ Upon detecting violence, the system generates alerts, records incidents, and cap
 
 ## System Architecture
 
-```text
-Live Camera Feed
-        │
-        ▼
-Frame Extraction
-        │
-        ▼
-MobileNet Feature Extraction
-        │
-        ▼
-GRU Temporal Analysis
-        │
-        ▼
-Violence Detection
-        │
- ┌──────┴──────┐
- ▼             ▼
-Alert       Incident Log
-System      + Snapshot
-```
-
----
+![Architecture](docs/architecture.png)
 
 ## Technology Stack
 
