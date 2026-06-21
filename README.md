@@ -92,6 +92,14 @@ violence-detection-mobilenet-gru/
 
 ---
 
+## Dataset
+
+The model was trained using a publicly available violence detection dataset.
+
+Dataset is excluded from this repository because of size limitations.
+
+---
+
 ## Installation
 
 ### Clone Repository
