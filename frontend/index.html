@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Violence Detection Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="loginView" class="login-view">
+    <form id="loginForm" class="login-panel" novalidate>
+      <h1>Sign in</h1>
+      <p>Enter your name and a valid email to continue.</p>
+      <label class="field" for="nameInput">
+        Name
+        <input id="nameInput" name="name" type="text" autocomplete="name" minlength="2" placeholder="Your name" required>
+      </label>
+      <label class="field" for="emailInput">
+        Email
+        <input id="emailInput" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@example.com" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" required>
+      </label>
+      <div id="loginError" class="login-error" aria-live="polite"></div>
+      <button class="primary" type="submit">Continue</button>
+    </form>
+  </section>
 
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Video Safety AI</p>
+      <h1>Violence Detection</h1>
+    </div>
+    <div class="status-wrap">
+      <span id="signedInUser" class="user-pill"></span>
+      <button id="logoutBtn" type="button">Logout</button>
+      <span id="modelBadge" class="badge">Browser baseline</span>
+      <span id="statusText" class="status neutral">Ready</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="workspace" aria-label="Video analysis workspace">
+      <div class="viewer">
+        <video id="videoPreview" controls playsinline></video>
+        <canvas id="demoPreview" width="960" height="540" aria-label="Generated demo preview"></canvas>
+        <div id="emptyState" class="empty-state">
+          <span>Upload a clip or start a sample run</span>
+        </div>
+        <div id="alertBanner" class="alert-banner hidden">High-risk activity detected</div>
+      </div>
+
+      <div class="controls" aria-label="Analysis controls">
+        <input id="videoInput" type="file" accept="video/*" hidden>
+        <button id="uploadBtn" class="primary" type="button" title="Upload local video">Upload video</button>
+        <button id="analyzeBtn" type="button" title="Analyze the loaded video" disabled>Analyze</button>
+        <button id="playBtn" type="button" title="Play video manually" disabled>Play</button>
+        <button id="pauseBtn" type="button" title="Pause video manually" disabled>Pause</button>
+        <button id="cameraBtn" type="button" title="Start camera analysis">Camera</button>
+        <button id="stopBtn" type="button" title="Stop live analysis" disabled>Stop</button>
+        <button id="calmSampleBtn" type="button" title="Run low-risk sample">Calm sample</button>
+        <button id="riskSampleBtn" type="button" title="Run high-risk sample">High-risk sample</button>
+        <button id="exportBtn" type="button" title="Export JSON report" disabled>Export report</button>
+      </div>
+    </section>
+
+    <aside class="side-panel" aria-label="Detection summary">
+      <div class="metric-grid">
+        <div class="metric prediction-metric">
+          <span class="metric-label">Prediction</span>
+          <strong id="predictionText">--</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Current</span>
+          <strong id="currentRisk">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Peak</span>
+          <strong id="peakRisk">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Average</span>
+          <strong id="averageRisk">0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Frames</span>
+          <strong id="frameCount">0</strong>
+        </div>
+      </div>
+      <p id="predictionDetail" class="prediction-detail">Analyze a video to see the result.</p>
+
+      <label class="slider-label" for="thresholdInput">
+        Alert threshold
+        <span id="thresholdValue">60</span>
+      </label>
+      <input id="thresholdInput" type="range" min="35" max="90" value="60">
+
+      <label class="select-label" for="analysisDepth">
+        Analysis depth
+      </label>
+      <select id="analysisDepth">
+        <option value="fast">Fast</option>
+        <option value="balanced" selected>Balanced</option>
+        <option value="accurate">Accurate</option>
+      </select>
+
+      <label class="select-label" for="sensitivityMode">
+        Detection sensitivity
+      </label>
+      <select id="sensitivityMode">
+        <option value="normal" selected>Normal</option>
+        <option value="high">High</option>
+        <option value="cctv">CCTV / small action</option>
+      </select>
+
+      <div class="calibration-panel">
+        <span class="metric-label">Custom calibration</span>
+        <div class="calibration-actions">
+          <button id="markNonViolenceBtn" type="button" disabled>Mark non-violence</button>
+          <button id="markViolenceBtn" type="button" disabled>Mark violence</button>
+          <button id="trainCustomBtn" type="button" disabled>Train</button>
+          <button id="clearTrainingBtn" type="button" disabled>Clear</button>
+        </div>
+        <p id="trainingStatus">No labeled examples yet.</p>
+      </div>
+
+      <div class="breakdown" aria-label="Signal breakdown">
+        <div>
+          <span>Motion</span>
+          <progress id="motionBar" max="100" value="0"></progress>
+        </div>
+        <div>
+          <span>Impact</span>
+          <progress id="impactBar" max="100" value="0"></progress>
+        </div>
+        <div>
+          <span>Instability</span>
+          <progress id="instabilityBar" max="100" value="0"></progress>
+        </div>
+      </div>
+    </aside>
+
+    <section class="timeline-section" aria-label="Risk timeline">
+      <div class="section-heading">
+        <h2>Risk Timeline</h2>
+        <span id="durationLabel">No video loaded</span>
+      </div>
+      <canvas id="timelineCanvas" width="1100" height="220"></canvas>
+    </section>
+
+    <section class="evidence-section" aria-label="Evidence frames">
+      <div class="section-heading">
+        <h2>Evidence Frames</h2>
+        <span id="segmentCount">0 segments</span>
+      </div>
+      <div id="evidenceGrid" class="evidence-grid"></div>
+      <div id="segmentList" class="segment-list"></div>
+    </section>
+  </main>
+
+  <canvas id="analysisCanvas" width="192" height="108" hidden></canvas>
+  <script src="app.js"></script>
+</body>
+</html>
